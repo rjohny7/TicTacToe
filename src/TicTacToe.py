@@ -109,9 +109,10 @@ class Tic_Tac_Toe:
             self.win_label["text"] = "Winner: "+ self.turn
         
 
-
+''''
 def main():
 
-    ttt = Tic_Tac_Toe()
+    game = Tic_Tac_Toe()
 
 main()
+'''''
