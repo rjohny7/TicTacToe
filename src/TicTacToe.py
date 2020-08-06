@@ -28,6 +28,7 @@ class Tic_Tac_Toe:
         window["background"] = "black"
 
         #game state
+        self.won = False
         self.labels = []
         self.turn = "X"
 
@@ -57,6 +58,9 @@ class Tic_Tac_Toe:
     labels gets clicked.
     '''
     def handle_mouse_click(self, event):
+      #if game over do nothing
+        if self.won:
+          return
         #get the label that got clicked
         label = event.widget
         #print(label.row, label.col)
@@ -74,6 +78,7 @@ class Tic_Tac_Toe:
                 self.turn = "O"
             else:
                 self.turn = "X"
+            
 
     '''
     Check if someone has won by making the move they just made.
@@ -86,6 +91,7 @@ class Tic_Tac_Toe:
            self.labels[row][2]["text"]:
             #update the bottom label
             self.win_label["text"] = "Winner: " + self.turn 
+            self.won = True
 
         #did they win down a col
         elif self.labels[0][col]["text"] == \
@@ -93,21 +99,21 @@ class Tic_Tac_Toe:
              self.labels[2][col]["text"]:
             #update the bottom label
             self.win_label["text"] = "Winner: " + self.turn
-
+            self.won = True
         #did they win on the diagonal
         elif self.labels[0][0]["text"] == \
              self.labels[1][1]["text"] == \
              self.labels[2][2]["text"] != " ": #make sure the diagonal is not all spaces!
             #update the bottom label
             self.win_label["text"] = "Winner: " +self.turn
-
+            self.won = True
         #did they win on the reverse diagonal
         elif self.labels[2][0]["text"] == \
              self.labels[1][1]["text"] == \
              self.labels[0][2]["text"] != " ": #make sure it is not all spaces
             #update the bottom label
             self.win_label["text"] = "Winner: "+ self.turn
-        
+            self.won = True
 
 ''''
 def main():
