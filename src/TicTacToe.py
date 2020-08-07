@@ -2,7 +2,7 @@
 Tic Tac Toe with a GUI (Graphical User Interface)
 '''
 from tkinter import *
-
+from computer import *
 '''
 A class that extend Label, so that the labels
 in our GUI have a row and column associated
@@ -28,8 +28,10 @@ class Tic_Tac_Toe:
         window["background"] = "black"
 
         #game state
+        self.won = False
         self.labels = []
         self.turn = "X"
+        self.computer = Computer()
 
         #create 3x3 board game
         for i in range(3):
@@ -57,6 +59,9 @@ class Tic_Tac_Toe:
     labels gets clicked.
     '''
     def handle_mouse_click(self, event):
+      #if game over do nothing
+        if self.won:
+          return
         #get the label that got clicked
         label = event.widget
         #print(label.row, label.col)
@@ -65,49 +70,56 @@ class Tic_Tac_Toe:
         if label["text"] == " ":
             #place the X or O
             label["text"] = self.turn
-
+            #update computer
+            self.computer.update(label.row, label.col,self.turn)
             #see if someone won by making this move
-            self.check_win(label.row, label.col)
-
+            self.check_win(label.row, label.col,self.turn)
+            #make computer move
+            if not self.won:
+              move = self.computer.bestMove(self.labels)
+              self.check_win(move[0], move[1],"O")
+            ''''
             #switch whose turn it is
             if self.turn == "X":
                 self.turn = "O"
             else:
                 self.turn = "X"
+            '''
 
     '''
     Check if someone has won by making the move they just made.
     '''
-    def check_win(self, row, col):
+    def check_win(self, row, col,sign):
 
         #did they win across a row
         if self.labels[row][0]["text"] == \
            self.labels[row][1]["text"] == \
            self.labels[row][2]["text"]:
             #update the bottom label
-            self.win_label["text"] = "Winner: " + self.turn 
+            self.win_label["text"] = "Winner: " + sign 
+            self.won = True
 
         #did they win down a col
         elif self.labels[0][col]["text"] == \
              self.labels[1][col]["text"] == \
              self.labels[2][col]["text"]:
             #update the bottom label
-            self.win_label["text"] = "Winner: " + self.turn
-
+            self.win_label["text"] = "Winner: " + sign
+            self.won = True
         #did they win on the diagonal
         elif self.labels[0][0]["text"] == \
              self.labels[1][1]["text"] == \
              self.labels[2][2]["text"] != " ": #make sure the diagonal is not all spaces!
             #update the bottom label
-            self.win_label["text"] = "Winner: " +self.turn
-
+            self.win_label["text"] = "Winner: " +sign
+            self.won = True
         #did they win on the reverse diagonal
         elif self.labels[2][0]["text"] == \
              self.labels[1][1]["text"] == \
              self.labels[0][2]["text"] != " ": #make sure it is not all spaces
             #update the bottom label
-            self.win_label["text"] = "Winner: "+ self.turn
-        
+            self.win_label["text"] = "Winner: "+ sign
+            self.won = True
 
 ''''
 def main():
