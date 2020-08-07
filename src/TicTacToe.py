@@ -96,7 +96,7 @@ class Tic_Tac_Toe:
            self.labels[row][1]["text"] == \
            self.labels[row][2]["text"]:
             #update the bottom label
-            self.win_label["text"] = "Winner: " + sign 
+            self.win_label["text"] = "Winner: " + sign
             self.won = True
 
         #did they win down a col
