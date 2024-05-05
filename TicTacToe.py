@@ -5,7 +5,7 @@ from tkinter import *
 '''
 A class that extend Label, so that the labels
 in our GUI have a row and column associated
-with them (in addition to all the regular
+with them in addition to all the regular
 Label things they they inherit from the Label class.
 '''
 class TTT_Label(Label):
@@ -27,7 +27,7 @@ class Tic_Tac_Toe:
         window["background"] = "black"
 
         #game state
-        self.won = False
+        self.finished = False
         self.labels = []
         self.turn = "X"
 
@@ -58,7 +58,7 @@ class Tic_Tac_Toe:
     '''
     def handle_mouse_click(self, event):
       #if game over do nothing
-        if self.won:
+        if self.finished:
           return
         #get the label that got clicked
         label = event.widget
@@ -68,19 +68,18 @@ class Tic_Tac_Toe:
         if label["text"] == " ":
             #place the X or O
             label["text"] = self.turn
-            #see if someone won by making this move
+            #see if game is over
             self.check_win(label.row, label.col,self.turn)
-            #make computer move
+            if not self.finished:
+                self.check_draw()
             #switch whose turn it is
-            if self.turn == "X":
-                self.turn = "O"
-            else:
-                self.turn = "X"
+            if not self.finished:
+                self.turn = "X" if self.turn == "O" else "O"
 
     '''
     Check if someone has won by making the move they just made.
     '''
-    def check_win(self, row, col,sign):
+    def check_win(self, row, col, sign):
 
         #did they win across a row
         if self.labels[row][0]["text"] == \
@@ -88,7 +87,7 @@ class Tic_Tac_Toe:
            self.labels[row][2]["text"]:
             #update the bottom label
             self.win_label["text"] = "Winner: " + sign
-            self.won = True
+            self.finished = True
 
         #did they win down a col
         elif self.labels[0][col]["text"] == \
@@ -96,25 +95,33 @@ class Tic_Tac_Toe:
              self.labels[2][col]["text"]:
             #update the bottom label
             self.win_label["text"] = "Winner: " + sign
-            self.won = True
+            self.finished = True
         #did they win on the diagonal
         elif self.labels[0][0]["text"] == \
              self.labels[1][1]["text"] == \
              self.labels[2][2]["text"] != " ": #make sure the diagonal is not all spaces!
             #update the bottom label
             self.win_label["text"] = "Winner: " +sign
-            self.won = True
+            self.finished = True
         #did they win on the reverse diagonal
         elif self.labels[2][0]["text"] == \
              self.labels[1][1]["text"] == \
              self.labels[0][2]["text"] != " ": #make sure it is not all spaces
             #update the bottom label
             self.win_label["text"] = "Winner: "+ sign
-            self.won = True
+            self.finished = True
+    
+    def check_draw(self):
+        for row in self.labels:
+            for square in row:
+                if square["text"] == " ":   #not a draw yet
+                    return
+        self.win_label["text"] = "Draw!"
+        self.finished = True
+
 
 
 def main():
-
     game = Tic_Tac_Toe()
 
 main()
