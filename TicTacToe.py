@@ -71,25 +71,33 @@ class Tic_Tac_Toe:
 
         #check if this space is available
         if label["text"] == " ":
-            #place the X or O
-            label["text"] = self.turn
-            #see if game is over
-            self.check_win(label.row, label.col,self.turn)
-            if not self.finished:
-                self.check_draw()
-            #switch whose turn it is
-            if not self.finished:
-                self.turn = "X" if self.turn == "O" else "O"
+            self.make_move(label)
+
+    '''
+    Update the game state to reflect the current move
+    '''
+    def make_move(self, label):
+        #place the X or O
+        label["text"] = self.turn
+        #see if game is over
+        self.check_win(label.row, label.col,self.turn)
+        if not self.finished:
+            self.check_draw()
+        #switch whose turn it is
+        if not self.finished:
+            self.turn = "X" if self.turn == "O" else "O"
 
     '''
     This is the callback method for when the new game label gets
     clicked
     '''
     def handle_restart(self, event):
+        self.finished = False
         for row in self.labels:
             for square in row:
                 square["text"] = " "
         self.turn = "X"
+        self.win_label["text"] = " "
 
     '''
     Check if someone has won by making the move they just made.
