@@ -2,7 +2,6 @@
 Tic Tac Toe with a GUI (Graphical User Interface)
 '''
 from tkinter import *
-from computer import *
 '''
 A class that extend Label, so that the labels
 in our GUI have a row and column associated
@@ -31,7 +30,6 @@ class Tic_Tac_Toe:
         self.won = False
         self.labels = []
         self.turn = "X"
-        self.computer = Computer()
 
         #create 3x3 board game
         for i in range(3):
@@ -70,21 +68,14 @@ class Tic_Tac_Toe:
         if label["text"] == " ":
             #place the X or O
             label["text"] = self.turn
-            #update computer
-            self.computer.update(label.row, label.col,self.turn)
             #see if someone won by making this move
             self.check_win(label.row, label.col,self.turn)
             #make computer move
-            if not self.won:
-              move = self.computer.bestMove(self.labels)
-              self.check_win(move[0], move[1],"O")
-            ''''
             #switch whose turn it is
             if self.turn == "X":
                 self.turn = "O"
             else:
                 self.turn = "X"
-            '''
 
     '''
     Check if someone has won by making the move they just made.
@@ -121,10 +112,9 @@ class Tic_Tac_Toe:
             self.win_label["text"] = "Winner: "+ sign
             self.won = True
 
-''''
+
 def main():
 
     game = Tic_Tac_Toe()
 
 main()
-'''''
