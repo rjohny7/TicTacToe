@@ -49,6 +49,11 @@ class Tic_Tac_Toe:
         self.win_label = Label(window, text=" ", font=("Helvetica", "40"))
         self.win_label.grid(row=3, column=0, columnspan=3, sticky=W+E)
         
+        #add a button to restart the game
+        self.restart_label = Label(window, text="New Game",  font=("Helvetica", "40"))
+        self.restart_label.grid(row=4, column=0, columnspan=3, sticky=W+E, padx=1, pady=1)
+        self.restart_label.config(bg="yellow")
+        self.restart_label.bind("<Button-1>", self.handle_restart)
         #start the GUI
         window.mainloop()
 
@@ -75,6 +80,16 @@ class Tic_Tac_Toe:
             #switch whose turn it is
             if not self.finished:
                 self.turn = "X" if self.turn == "O" else "O"
+
+    '''
+    This is the callback method for when the new game label gets
+    clicked
+    '''
+    def handle_restart(self, event):
+        for row in self.labels:
+            for square in row:
+                square["text"] = " "
+        self.turn = "X"
 
     '''
     Check if someone has won by making the move they just made.
@@ -110,7 +125,9 @@ class Tic_Tac_Toe:
             #update the bottom label
             self.win_label["text"] = "Winner: "+ sign
             self.finished = True
-    
+    '''
+    Check if the game is drawn
+    '''
     def check_draw(self):
         for row in self.labels:
             for square in row:
