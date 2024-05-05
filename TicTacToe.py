@@ -72,6 +72,8 @@ class Tic_Tac_Toe:
         #check if this space is available
         if label["text"] == " ":
             self.make_move(label)
+            if not self.finished:
+                self.best_move()
 
     '''
     Update the game state to reflect the current move
@@ -80,9 +82,14 @@ class Tic_Tac_Toe:
         #place the X or O
         label["text"] = self.turn
         #see if game is over
-        self.check_win(label.row, label.col,self.turn)
-        if not self.finished:
-            self.check_draw()
+        if self.check_win(label.row, label.col):
+            #update the bottom label
+            self.win_label["text"] = "Winner: " + self.turn
+            self.finished = True
+        elif self.check_draw():
+            self.win_label["text"] = "Draw!"
+            self.finished = True
+
         #switch whose turn it is
         if not self.finished:
             self.turn = "X" if self.turn == "O" else "O"
@@ -102,37 +109,30 @@ class Tic_Tac_Toe:
     '''
     Check if someone has won by making the move they just made.
     '''
-    def check_win(self, row, col, sign):
+    def check_win(self, row, col):
 
         #did they win across a row
         if self.labels[row][0]["text"] == \
            self.labels[row][1]["text"] == \
            self.labels[row][2]["text"]:
-            #update the bottom label
-            self.win_label["text"] = "Winner: " + sign
-            self.finished = True
+            return True
 
         #did they win down a col
         elif self.labels[0][col]["text"] == \
              self.labels[1][col]["text"] == \
              self.labels[2][col]["text"]:
-            #update the bottom label
-            self.win_label["text"] = "Winner: " + sign
-            self.finished = True
+            return True
         #did they win on the diagonal
         elif self.labels[0][0]["text"] == \
              self.labels[1][1]["text"] == \
              self.labels[2][2]["text"] != " ": #make sure the diagonal is not all spaces!
-            #update the bottom label
-            self.win_label["text"] = "Winner: " +sign
-            self.finished = True
+            return True
         #did they win on the reverse diagonal
         elif self.labels[2][0]["text"] == \
              self.labels[1][1]["text"] == \
              self.labels[0][2]["text"] != " ": #make sure it is not all spaces
-            #update the bottom label
-            self.win_label["text"] = "Winner: "+ sign
-            self.finished = True
+            return True
+        return False
     '''
     Check if the game is drawn
     '''
@@ -140,9 +140,59 @@ class Tic_Tac_Toe:
         for row in self.labels:
             for square in row:
                 if square["text"] == " ":   #not a draw yet
-                    return
-        self.win_label["text"] = "Draw!"
-        self.finished = True
+                    return False
+        return True
+
+    '''
+    Make the best move in the board
+    '''
+    def best_move(self):
+        best_score = -100
+        move = None
+        for row in self.labels:
+            for square in row:
+                if square["text"] == " ":
+                    square["text"] = self.turn
+                    score = self.minimax(True, square)
+                    square["text"] = " "
+                    if score > best_score:
+                        best_score = score
+                        move = square
+        self.make_move(move)
+
+    '''
+    Calculate the score for board state given a move
+    '''
+    def minimax(self, maxizmizing, move):
+        if self.check_win(move.row, move.col): #terminal states 
+            return 1 if maxizmizing else -1
+        if self.check_draw():
+            return 0
+        #traverse the decision tree
+        self.turn = "X" if self.turn == "O" else "O"
+        if maxizmizing:
+            best_score = 100
+            for row in self.labels:
+                for square in row:
+                    if square["text"] == " ":
+                        square["text"] = self.turn
+                        score = self.minimax(False, square)
+                        square["text"] = " "
+                        if score < best_score:
+                            best_score = score
+        else:
+            best_score = -100
+            for row in self.labels:
+                for square in row:
+                    if square["text"] == " ":
+                        square["text"] = self.turn
+                        score = self.minimax(True, square)
+                        square["text"] = " "
+                        if score > best_score:
+                            best_score = score
+        self.turn = "X" if self.turn == "O" else "O"
+        return best_score
+
 
 
 
