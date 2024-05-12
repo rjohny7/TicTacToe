@@ -178,6 +178,9 @@ class Tic_Tac_Toe:
                         square["text"] = self.turn
                         score = self.minimax(False, square)
                         square["text"] = " "
+                        if score == -1: #already best score
+                            self.turn = "X" if self.turn == "O" else "O"
+                            return -1
                         if score < best_score:
                             best_score = score
         else:
@@ -188,6 +191,9 @@ class Tic_Tac_Toe:
                         square["text"] = self.turn
                         score = self.minimax(True, square)
                         square["text"] = " "
+                        if score == 1: #already best score
+                            self.turn = "X" if self.turn == "O" else "O"
+                            return score
                         if score > best_score:
                             best_score = score
         self.turn = "X" if self.turn == "O" else "O"
